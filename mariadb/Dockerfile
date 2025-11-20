@@ -4,10 +4,10 @@ FROM debian:12.11
 # Update system and install mariaDB
 RUN apt update && apt install -y mariadb-server
 
-COPY tools/mariadb.sh /usr/local/bin/
+COPY tools/mariadb.sh /usr/local/bin/mariadb.sh
 RUN chmod +x /usr/local/bin/mariadb.sh
 
 # MariaDB Port
 EXPOSE 3306
 
-CMD ["mysqld"]
+ENTRYPOINT ["usr/local/bin/mariadb.sh"]
