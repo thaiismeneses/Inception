@@ -1,30 +1,33 @@
 #!/bin/bash
 set -e
 
+SOCKET="/run/mysqld/mysqld.sock"
+
 mkdir -p /run/mysqld
 chown -R mysql:mysql /run/mysqld
 
 chown -R mysql:mysql /var/lib/mysql
 
+# Avoid client picking up MYSQL_HOST/MYSQL_PORT from environment
+unset MYSQL_HOST MYSQL_PORT
+
 # Inicializa o banco caso ainda não exista
 if [ ! -d "/var/lib/mysql/mysql" ]; then
-    echo "Inicializando o diretório do banco..."
-    mysql_install_db --user=mysql --datadir=/var/lib/mysql > /dev/null
+    echo "Inicializando base de dados..."
+    mariadb-install-db --user=mysql --datadir=/var/lib/mysql > /dev/null
 fi
 
 echo "Iniciando MariaDB temporário..."
-/usr/sbin/mysqld --user=mysql --datadir=/var/lib/mysql --skip-networking &
+mariadbd --user=mysql --datadir=/var/lib/mysql --skip-networking --socket=$SOCKET &
 pid="$!"
 
-echo "Aguardando MariaDB Iniciar..."
-until mysqladmin --protocol=socket ping --silent; do
+echo "Aguardando MariaDB iniciar..."
+until mysqladmin --protocol=socket --socket=$SOCKET ping --silent; do
     sleep 1
 done
 
-
 echo "Configurando banco e usuários..."
-
-mysql --protocol=socket -u root << EOF
+mysql --protocol=socket --socket=$SOCKET -u root << EOF
 ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';
 
 CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;
@@ -36,10 +39,9 @@ GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';
 FLUSH PRIVILEGES;
 EOF
 
-
 echo "Parando instância temporária..."
 kill "$pid"
-sleep 2
+wait "$pid"
 
 echo "Iniciando MariaDB definitivo..."
-exec /usr/sbin/mysqld --user=mysql --datadir=/var/lib/mysql
+exec mariadbd --user=mysql --datadir=/var/lib/mysql --socket=$SOCKET

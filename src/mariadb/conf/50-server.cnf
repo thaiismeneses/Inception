@@ -1,0 +1,34 @@
+[mysqld]
+user = mysql
+
+# Diretório de dados (volume montado)
+datadir = /var/lib/mysql
+
+# Rede — permite WordPress conectar
+bind-address = 0.0.0.0
+port = 3306
+
+# Socket e PID — caminho obrigatório no Debian + Docker
+socket = /run/mysqld/mysqld.sock
+pid-file = /run/mysqld/mysqld.pid
+
+# Evita erros de DNS dentro do Docker
+skip-host-cache
+skip-name-resolve
+
+# Charset — recomendado para WordPress
+character-set-server = utf8mb4
+collation-server = utf8mb4_unicode_ci
+
+# Aumenta compatibilidade com scripts e imagens customizadas
+symbolic-links = 0
+
+# Evita tentativa de usar io_uring em kernels/configs sem permissão
+# (gera a mensagem "create_uring failed: falling back to libaio").
+# Desativa AIO nativo do InnoDB para suprimir esse aviso e forçar o
+# fallback seguro para libaio, sem impacto funcional na maioria dos
+# ambientes de containers/VMs.
+innodb_use_native_aio = 0
+
+[client]
+socket = /run/mysqld/mysqld.sock

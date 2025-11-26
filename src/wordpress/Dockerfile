@@ -1,0 +1,36 @@
+FROM debian:12.11
+
+RUN apt update && apt install -y \
+    php \
+    php-fpm \
+    php-mysql \
+    php-cli \
+    php-curl \
+    php-mbstring \
+    php-xml \
+    php-zip \
+    wget \
+    curl \
+    tar \
+    mariadb-client \
+        && rm -rf /var/lib/apt/lists/*
+
+# Ensure a generic `php-fpm` binary exists (some Debian packages install versioned binary)
+RUN target=$(ls /usr/sbin/php-fpm* 2>/dev/null | head -n1) && \
+        if [ -n "$target" ] && [ -x "$target" ]; then \
+            ln -sf "$target" /usr/sbin/php-fpm; \
+        fi
+
+# Instala WP-CLI
+RUN curl -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+    && chmod +x /usr/local/bin/wp
+
+RUN mkdir -p /var/www/wordpress \
+    && chown -R www-data:www-data /var/www/wordpress
+
+WORKDIR /var/www/wordpress
+
+COPY tools/wp-setup.sh /usr/local/bin/wp-setup.sh
+RUN chmod +x /usr/local/bin/wp-setup.sh
+
+CMD ["bash", "/usr/local/bin/wp-setup.sh"]
