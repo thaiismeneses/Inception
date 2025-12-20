@@ -12,7 +12,8 @@ RUN openssl req -x509 -newkey rsa:4096 -sha256 -days 365 \
     -nodes \
     -keyout /etc/nginx/certs/nginx.key \
     -out /etc/nginx/certs/nginx.crt \
-    -subj "/CN=localhost"
+    -subj "/CN=thfranco.42.fr" \
+    -addext "subjectAltName=DNS:thfranco.42.fr"
 
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 

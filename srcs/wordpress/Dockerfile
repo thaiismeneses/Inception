@@ -21,6 +21,10 @@ RUN target=$(ls /usr/sbin/php-fpm* 2>/dev/null | head -n1) && \
             ln -sf "$target" /usr/sbin/php-fpm; \
         fi
 
+# Configurar PHP-FPM para escutar em TCP 9000 em vez de socket Unix
+RUN sed -i 's|listen = /run/php/php.*\.sock|listen = 9000|g' /etc/php/8.2/fpm/pool.d/www.conf && \
+    mkdir -p /run/php
+
 # Instala WP-CLI
 RUN curl -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod +x /usr/local/bin/wp
