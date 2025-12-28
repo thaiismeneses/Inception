@@ -38,4 +38,4 @@ WORKDIR /var/www/wordpress
 COPY tools/wp-setup.sh /usr/local/bin/wp-setup.sh
 RUN chmod +x /usr/local/bin/wp-setup.sh
 
-CMD ["bash", "/usr/local/bin/wp-setup.sh"]
+ENTRYPOINT ["/usr/local/bin/wp-setup.sh"]
