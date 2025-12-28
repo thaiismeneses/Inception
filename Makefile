@@ -11,7 +11,7 @@ BLUE      = \033[1;34m
 CYAN      = \033[1;36m
 MAGENTA   = \033[1;35m
 
-all: up
+all: build
 
 
 banner:
@@ -22,9 +22,15 @@ banner:
 	@echo "$(NC)"
 
 
+build: banner
+	@echo "$(GREEN) [CONSTRUINDO CONTAINERS...] $(NC)"
+	$(COMPOSE) up --build -d
+	@echo "$(GREEN) ✔ Containers Up!$(NC)"
+
+
 up: banner
 	@echo "$(GREEN) [SUBINDO CONTAINERS...] $(NC)"
-	$(COMPOSE) up --build -d
+	$(COMPOSE) up 
 	@echo "$(GREEN) ✔ Containers Up!$(NC)"
 
 down:
@@ -53,7 +59,7 @@ fclean:
 
 
 
-re: fclean up
+re: fclean build
 
 logs:
 	@echo "$(BLUE) [MOSTRANDO LOGS...]$(NC)"
