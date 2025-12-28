@@ -5,28 +5,28 @@ SOCKET="/run/mysqld/mysqld.sock"
 
 mkdir -p /run/mysqld
 chown -R mysql:mysql /run/mysqld
-
 chown -R mysql:mysql /var/lib/mysql
 
-# Avoid client picking up MYSQL_HOST/MYSQL_PORT from environment
 unset MYSQL_HOST MYSQL_PORT
 
-# Inicializa o banco caso ainda não exista
-if [ ! -d "/var/lib/mysql/mysql" ]; then
-    echo "Inicializando base de dados..."
-    mariadb-install-db --user=mysql --datadir=/var/lib/mysql > /dev/null
+# Se o banco já existe, sobe direto
+if [ -d "/var/lib/mysql/${MYSQL_DATABASE}" ]; then
+    echo "📂 Banco já existe, subindo MariaDB normalmente..."
+    exec mariadbd --user=mysql --socket=$SOCKET
 fi
 
-echo "Iniciando MariaDB temporário..."
-mariadbd --user=mysql --datadir=/var/lib/mysql --skip-networking --socket=$SOCKET &
+echo "📦 Inicializando banco de dados MariaDB..."
+mariadb-install-db --user=mysql --datadir=/var/lib/mysql > /dev/null
+
+echo "🚀 Iniciando MariaDB temporário..."
+mariadbd --user=mysql --skip-networking --socket=$SOCKET &
 pid="$!"
 
-echo "Aguardando MariaDB iniciar..."
 until mysqladmin --protocol=socket --socket=$SOCKET ping --silent; do
     sleep 1
 done
 
-echo "Configurando banco e usuários..."
+echo "⚙️ Configurando banco e usuários..."
 mysql --protocol=socket --socket=$SOCKET -u root << EOF
 ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';
 
@@ -39,9 +39,8 @@ GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';
 FLUSH PRIVILEGES;
 EOF
 
-echo "Parando instância temporária..."
-kill "$pid"
-wait "$pid"
+echo "🛑 Parando MariaDB temporário..."
+mysqladmin --protocol=socket --socket=$SOCKET -uroot -p"${MYSQL_ROOT_PASSWORD}" shutdown
 
-echo "Iniciando MariaDB definitivo..."
-exec mariadbd --user=mysql --datadir=/var/lib/mysql --socket=$SOCKET
+echo "✅ Iniciando MariaDB definitivo..."
+exec mariadbd --user=mysql --socket=$SOCKET

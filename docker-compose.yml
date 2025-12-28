@@ -27,6 +27,11 @@ services:
       - "9000"
     networks:
       - inception
+    healthcheck:
+      test: ["CMD", "bash", "-c", "nc -z localhost 9000"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   nginx:
     build: ./srcs/nginx
