@@ -23,6 +23,7 @@ banner:
 
 
 build: banner
+	@mkdir -p ~/data/
 	@echo "$(GREEN) [CONSTRUINDO CONTAINERS...] $(NC)"
 	$(COMPOSE) up --build -d
 	@echo "$(GREEN) ✔ Containers Up!$(NC)"

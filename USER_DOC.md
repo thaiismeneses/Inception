@@ -9,12 +9,34 @@ This document explains how to use and administer the Inception project as an end
 - **MariaDB** to store WordPress content and user data.
 - **Persistent data** stored on the host: `/home/thfranco/data/wordpress` (site files/uploads) and `/home/thfranco/data/mariadb` (database files).
 
+## Credentials Management
+All credentials are stored in a `.env` file located at `srcs/.env`. This file is read by Docker Compose when starting the services.
+
+**Creating the .env file**
+
+Before starting the project, you **must create the `.env` file** inside the `srcs/` directory. This file contains:
+- Database credentials (`MYSQL_ROOT_PASSWORD`, `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`)
+- WordPress configuration and admin credentials (`WP_ADMIN_USER`, `WP_ADMIN_PASS`)
+
+Create `srcs/.env` with your desired configuration. Example:
+```
+MYSQL_ROOT_PASSWORD=your_root_password
+MYSQL_DATABASE=wordpress_db
+MYSQL_USER=wordpress_user
+MYSQL_PASSWORD=your_db_password
+WP_ADMIN_USER=admin
+WP_ADMIN_PASS=your_admin_password
+```
+
+- To rotate credentials, update `.env`, then `make re` to recreate containers with new values.
+
 ## Start and stop the project
 - **Start Containers** <br>
     - To build images (if not already build) and start the stack 
         ```sh
         make build
         ```
+        This command will automatically create the required data directories (`~/data/`) on the first run.
     - To start all services
         ```sh
         make up
@@ -39,16 +61,11 @@ This document explains how to use and administer the Inception project as an end
     The Wordpress admin panel is available at:
     https://thfranco.42.fr/wp-admin
 
-  Log in using the Admin  credentials defined in the `.env` file:
+  Log in using the Admin credentials defined in the `srcs/.env` file:
     - `WP_ADMIN_USER`
     - `WP_ADMIN_PASS`
   
 
-## Credentials Management
-All credentials are stored in a `.env` file located at the root of the repository. This file is read by Docker Compose when starting the services.
-- Database credentials( `MYSQL_ROOT_PASSWORD`, `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`)
-- WordPress configuration and admin credentials.
-- To rotate credentials, update `.env`, then `make re` to recreate containers with new values.
 
 ## Verifying Services Status
 
