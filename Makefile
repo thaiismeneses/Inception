@@ -23,7 +23,7 @@ banner:
 
 
 build: banner
-	@mkdir -p ~/data/
+	@mkdir -p /home/thfranco/data/mariadb /home/thfranco/data/wordpress
 	@echo "$(GREEN) [CONSTRUINDO CONTAINERS...] $(NC)"
 	$(COMPOSE) up --build -d
 	@echo "$(GREEN) ✔ Containers Up!$(NC)"
@@ -56,6 +56,8 @@ fclean:
 	@echo "$(RED) [LIMPANDO TUDO...]$(NC)"
 	$(COMPOSE) down --volumes --remove-orphans
 	docker system prune -af
+	@echo "$(RED) [REMOVENDO DADOS...]$(NC)"
+	@sudo rm -rf /home/thfranco/data/
 	@echo "$(RED) ✔ Limpeza Completa!$(NC)"
 
 
