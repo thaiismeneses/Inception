@@ -24,11 +24,9 @@ Inception provisions a secure WordPress infrastructure composed of Nginx, PHP-FP
 
     Persistent data is stored on the host under `/home/thfranco/data/`, ensuring durability across container rebuilds.
 - **Sources included:**
-  - `srcs/nginx`: TLS-terminating reverse proxy serving WordPress over HTTPS.
-
-  - `srcs/wordpress`: PHP-FPM + WordPress setup and initialization tooling.
-
-  - `srcs/mariadb`: MariaDB server with custom config and bootstrap script.
+  - `srcs/requirements/nginx`: TLS-terminating reverse proxy serving WordPress over HTTPS.
+  - `srcs/requirements/wordpress`: PHP-FPM + WordPress setup and initialization tooling.
+  - `srcs/requirements/mariadb`: MariaDB server with custom config and bootstrap script.
 
 - **Main design choices:**
     - One container per responsibility to reflect production-grade separation of concerns.

@@ -23,19 +23,20 @@ This project is designed to run inside a Linux VM, as required by the 42 subject
 .
 ├── Makefile
 ├── .gitignore
-├── .env # Not versioned
 ├── srcs/
+│ ├── .env # Not versioned
 │ ├── docker-compose.yml
-│ ├── nginx/
-│ │ ├── Dockerfile
-│ │ └── conf/
-│ ├── wordpress/
-│ │ ├── Dockerfile
-│ │ └── tools/
-│ └── mariadb/
-|   ├── Dockerfile
-│   ├── conf/
-│   └── tools/
+│ └── requirements/
+│   ├── nginx/
+│   │ ├── Dockerfile
+│   │ └── conf/
+│   ├── wordpress/
+│   │ ├── Dockerfile
+│   │ └── tools/
+│   └── mariadb/
+|     ├── Dockerfile
+│     ├── conf/
+│     └── tools/
 ├── USER_DOC.md
 ├── DEV_DOC.md
 └── README.md
@@ -67,7 +68,7 @@ Ensure host directories exist or can be created: `/home/thfranco/data/mariadb` a
 ## Setting up from scratch
 1. Clone the repository.
 2. Create and fill `.env` with the variables above.
-3. (Optional) Inspect configuration under `srcs/*` for custom behavior (Nginx config, MariaDB init script, WordPress setup script).
+3. (Optional) Inspect configuration under `srcs/requirements/*` for custom behavior (Nginx config, MariaDB init script, WordPress setup script).
 
 ## Build and Launch Process
 
@@ -160,7 +161,7 @@ This flow ensures reliable startup order and prevents race conditions.
 ## Relevant Compose details
 - Network: `inception` bridge isolates services; only Nginx publishes port 443.
 - Health check: WordPress container is probed on port 9000 before Nginx proxies traffic.
-- Nginx config bind-mounted from `srcs/nginx/conf/nginx.conf`.
+- Nginx config bind-mounted from `srcs/requirements/nginx/conf/nginx.conf`.
 - WordPress and Nginx share the WordPress bind mount to serve the same files.
 
 ## Debugging Tips
