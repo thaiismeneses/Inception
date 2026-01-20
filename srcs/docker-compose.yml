@@ -2,54 +2,50 @@ version: "3.9"
 
 services:
   mariadb:
-    build: ./srcs/mariadb
+    build: ./mariadb
+    image: mariadb
     container_name: mariadb
     restart: always
     env_file: 
-      - .env
+      - ../.env
     volumes:
-      - /home/thaismeneses/data/mariadb:/var/lib/mysql
+      - /home/thfranco/data/mariadb:/var/lib/mysql
     networks:
       - inception
  
 
   wordpress:
-    build: ./srcs/wordpress
+    build: ./wordpress
+    image: wordpress
     container_name: wordpress
     restart: always
     env_file:
-      - .env
+      - ../.env
     depends_on:
       - mariadb
     volumes:
-      - /home/thaismeneses/data/wordpress:/var/www/wordpress
+      - /home/thfranco/data/wordpress:/var/www/wordpress
     expose:
       - "9000"
     networks:
       - inception
-    healthcheck:
-      test: ["CMD", "bash", "-c", "nc -z localhost 9000"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
 
   nginx:
-    build: ./srcs/nginx
-    container_name: nginx
+    build: ./nginx
+    image: nginx
+    container_name: nginx 
     depends_on:
       - wordpress
     ports:
       - "443:443"
     volumes:
-      - /home/thaismeneses/data/wordpress:/var/www/wordpress
-      - ./srcs/nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /home/thfranco/data/wordpress:/var/www/wordpress
+      - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
 
     networks:
       - inception
     restart: always
     
-
-
 networks:
   inception:
     driver: bridge

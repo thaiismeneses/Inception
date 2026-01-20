@@ -32,12 +32,12 @@ This document explains how to use and administer the Inception project as an end
 ## Accessing the site and admin panel
 - **Website Access**:<br>
     Once the container is running, access the WordPress site via:
-    https://localhost
+    https://thfranco.42.fr
      
     A self-signed TLS certificate is used. Your browser may display a security warning; this is expected and can be safely bypassed in a local environment.
 - **WordPress Admin Panel**:<br>
     The Wordpress admin panel is available at:
-    https://localhost/wp-admin
+    https://thfranco.42.fr/wp-admin
 
   Log in using the Admin  credentials defined in the `.env` file:
     - `WP_ADMIN_USER`
@@ -74,8 +74,8 @@ All credentials are stored in a `.env` file located at the root of the repositor
 **Health Checks**
 
 The WordPress (PHP-FPM) container includes a health check. Nginx will only start once PHP-FPM is reported as healthy, ensuring correct startup order.
- `docker compose -f docker-compose.yml ps --format json | jq '.[].Health'` (expect `healthy`).
-- Nginx reachability: open https://localhost in a browser.
+ `docker compose -f srcs/docker-compose.yml ps --format json | jq '.[].Health'` (expect `healthy`).
+- Nginx reachability: open https://thfranco.42.fr in a browser.
 
 ## Data Persistence
 
@@ -88,6 +88,6 @@ Project data is stored on the host machine to ensure it persists across containe
 Deleting containers will not remove this data. To fully reset the project, volumes and host data must be removed explicitly.
 
 ## Troubleshooting
-- Nothing on https://localhost: ensure `nginx` container is up and `wordpress` is healthy.
+- Nothing on https://thfranco.42.fr: ensure `nginx` container is up and `wordpress` is healthy.
 - Permission errors on data: confirm `/home/thaismeneses/data/` exists and is writable by Docker.
 - Changed credentials not applied: `make re` after updating `.env`.

@@ -22,10 +22,10 @@ This project is designed to run inside a Linux VM, as required by the 42 subject
 ```
 .
 ├── Makefile
-├── docker-compose.yml
 ├── .gitignore
 ├── .env # Not versioned
 ├── srcs/
+│ ├── docker-compose.yml
 │ ├── nginx/
 │ │ ├── Dockerfile
 │ │ └── conf/

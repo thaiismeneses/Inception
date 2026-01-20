@@ -1,6 +1,6 @@
 NAME = Inception
 
-COMPOSE = docker compose -f docker-compose.yml
+COMPOSE = docker compose -f srcs/docker-compose.yml
 
 #Cores
 NC        = \033[0m
