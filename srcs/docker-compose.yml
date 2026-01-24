@@ -6,13 +6,13 @@ services:
     image: mariadb
     container_name: mariadb
     restart: always
-    env_file: 
+    env_file:
       - ./.env
     volumes:
       - mariadb_data:/var/lib/mysql
     networks:
       - inception
- 
+
 
   wordpress:
     build: ./requirements/wordpress
@@ -33,11 +33,11 @@ services:
   nginx:
     build: ./requirements/nginx
     image: nginx
-    container_name: nginx 
+    container_name: nginx
     depends_on:
       - wordpress
     ports:
-      - "8443:8443"
+      - "443:443"
     volumes:
       - wordpress_data:/var/www/wordpress
       - ./requirements/nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
@@ -45,7 +45,7 @@ services:
     networks:
       - inception
     restart: always
-    
+
 networks:
   inception:
     driver: bridge
